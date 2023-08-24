@@ -94,3 +94,4 @@ while True:
         sg.popup_error(f'Ocorreu um erro: {e}')
         print(f'Ocorreu um erro: {e}')
 window.close()
+
