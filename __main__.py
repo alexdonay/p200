@@ -17,7 +17,7 @@ layout = [
     [sg.Button('Calcular'), sg.Button('Sair')],
     [sg.Output(size=(60, 15))]
 ]
-window = sg.Window('Cálculo de Receita', layout)
+window = sg.Window('SPED ECF - Total das receitas brutas informadas (P200(2) + P200(4) + P200(6) + P200(8) + P200(9) + P300(16)) diferente da receita calculada [P150("3.01.01.01.01")-P150("3.01.01.01.02.01")-P150("3.01.01.01.02.02")].', layout)
 while True:
     event, values = window.read()
     if event == sg.WIN_CLOSED or event == 'Sair':
@@ -47,7 +47,9 @@ while True:
             elif line[1] == "P300":
                 valor = line[4].strip().replace(",", ".")
                 if valor:
-                    P300_16[trimestre] = float(valor)
+                    valor_float = float(valor)
+                    if line[2] == "16":
+                        P300_16[trimestre] = float(valor)
 
             elif line[1] == "P150":
                 valor = line[8].strip().replace(",", ".")
@@ -63,12 +65,12 @@ while True:
 
         receita_informada = []
         receita_calculada = []
-        
 
-        
-        
+
+
+
         sg.popup('Receita calculada com sucesso!')
-        
+
         for i in range(4):
             receita_informada.append(
                 P200_2[i]+P200_4[i]+P200_6[i]+P200_8[i]+P200_9[i]+P300_16[i])
@@ -76,8 +78,18 @@ while True:
                 P150_301010101[i]-P150_30101010202[i]-P150_30101010201[i])
             if receita_calculada[i] != receita_informada[i]:
                 print(
-                    f'No {i+1} trimestre: {round(receita_calculada[i] - receita_informada[i],2)}')
-        
+                    f'{i+1} trimestre \n'
+                    f'P200 2 - Receita bruta 1,6%:  ({P200_2[i]})\n'
+                    f'P200 4 - Receita bruta 8%: ({P200_4[i]})\n'
+                    f'P200 6 - Receita bruta 16%: ({P200_6[i]})\n'
+                    f'P200 8 - Receita bruta 32%: ({P200_8[i]})\n'
+                    f'P200 9 - Receita bruta 38,4%: ({P200_9[i]})\n'
+                    f'P300 16 - Receitas Ativ. Imobiliária: ({P300_16[i]})\n'
+                    f'P150_301010101 -  RECEITA BRUTA: ({P150_301010101[i]})\n'
+                    f'P150_30101010202 Descontos indcondicionais e abatimentos: ({P150_30101010202[i]})\n'
+                    f'P150_30101010201 - Vendas Canceladas: ({P150_30101010201[i]})\n'
+                    f'Diferença {round(receita_calculada[i] - receita_informada[i],2)}\n')
+
     except Exception as e:
         sg.popup_error(f'Ocorreu um erro: {e}')
         print(f'Ocorreu um erro: {e}')
